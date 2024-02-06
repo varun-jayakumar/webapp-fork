@@ -1,5 +1,3 @@
-import { sequelize } from "../config/database.js";
-import base64 from "base-64";
 import {
   saveUser,
   doesUserAlreadyExist,
