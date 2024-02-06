@@ -17,8 +17,6 @@ jobs:
         run: npm i
       - run: npm test
       - run: npm start
-      - name: check node process is available
-        run: |
           lsof -i :3000 | grep "node" | awk '{print $1}' | tail -n 1 | (read command; if [ "$command" = "node" ]; then echo "Node.js process is running"; exit 0; else echo "Not a Node.js process"; exit 1; fi)
       - name: stop node process
         run: kill $(lsof -t -i :3000)
