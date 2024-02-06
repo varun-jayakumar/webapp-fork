@@ -1,1 +1,2 @@
-export * as healthCheck from "./health.js";
+export * as healthController from "./health-controller.js";
+export * as userController from "./user-controller.js";
