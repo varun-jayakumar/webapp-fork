@@ -20,4 +20,4 @@ const defineAndValidateModels = () => {
   validateInitializtion();
 };
 
-export default defineAndValidatModels;
+export default defineAndValidateModels;
