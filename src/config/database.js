@@ -21,8 +21,8 @@ const dbConnect = async () => {
         defineAndValidateModels();
         global.areModelsInitialized = true;
       }
-      await setTimeout(1000);
     } catch (error) {
+      console.log("DB unavailable retrying in 50000ms");
       global.dbConnectionstatus = false;
       await setTimeout(5000);
     }

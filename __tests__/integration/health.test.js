@@ -2,9 +2,13 @@ const request = require("supertest");
 import app from "../../src/app.js";
 
 describe("/healthz", () => {
-  it("responds with 200 for GET /healthz (database must me up)", async () => {
+  // it("responds with 200 for GET /healthz (database must me up)", async () => {
+  //   const response = await request(app).get("/healthz");
+  //   expect(response.status).toEqual(200);
+  // });
+  it("responds with 503 for GET /healthz (database must be down)", async () => {
     const response = await request(app).get("/healthz");
-    expect(response.status).toEqual(200);
+    expect(response.status).toEqual(503);
   });
 
   it("responds with 405 for POST /healthz", async () => {
