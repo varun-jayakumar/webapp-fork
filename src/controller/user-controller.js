@@ -118,7 +118,7 @@ const validateCreateUserPlayload = (payload) => {
 };
 
 const validateUpdateUserPayload = (payload) => {
-  const allowedKeys = ["first_name", "last_name", "password", "username"];
+  const allowedKeys = ["first_name", "last_name", "password"];
   const presentKeys = Object.keys(payload);
 
   return (
