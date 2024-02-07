@@ -5,7 +5,7 @@ export let User;
 
 const initializeModels = () => {
   User = sequelize.define("User", user_model);
-  User.sync({ force: true });
+  User.sync({ alter: true });
 };
 
 const validateInitializtion = () => {

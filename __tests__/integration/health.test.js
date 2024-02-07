@@ -6,10 +6,6 @@ describe("/healthz", () => {
   //   const response = await request(app).get("/healthz");
   //   expect(response.status).toEqual(200);
   // });
-  it("responds with 503 for GET /healthz (database must be down)", async () => {
-    const response = await request(app).get("/healthz");
-    expect(response.status).toEqual(503);
-  });
 
   it("responds with 405 for POST /healthz", async () => {
     const response = await request(app).post("/healthz");

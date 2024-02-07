@@ -1,8 +1,9 @@
 import { Sequelize } from "sequelize";
 import { setTimeout } from "timers/promises";
 import defineAndValidateModels from "../models/index.js";
-export const sequelize = new Sequelize(
-  process.env.DB_NAME,
+export let sequelize;
+export let primaryConnection = new Sequelize(
+  "postgres",
   process.env.DB_USERNAME,
   process.env.DB_PASSWORD,
   {
@@ -12,20 +13,47 @@ export const sequelize = new Sequelize(
     logging: false,
   }
 );
+
 const dbConnect = async () => {
+  sequelize = new Sequelize(
+    process.env.DB_NAME,
+    process.env.DB_USERNAME,
+    process.env.DB_PASSWORD,
+    {
+      host: "localhost",
+      dialect: "postgres",
+      post: process.env.DB_PORT,
+      logging: false,
+    }
+  );
   while (true) {
     try {
       await sequelize.authenticate();
+      if (global.dbConnectionstatus == false) {
+        console.log("DB is connected now");
+      }
       global.dbConnectionstatus = true;
-      if (!areModelsInitialized) {
+      if (!global.areModelsInitialized) {
         defineAndValidateModels();
         global.areModelsInitialized = true;
       }
+      await setTimeout(1000);
     } catch (error) {
-      console.log("DB unavailable retrying in 50000ms");
+      console.log("waiting for DB...");
       global.dbConnectionstatus = false;
-      await setTimeout(5000);
+      await setTimeout(1000);
     }
+  }
+};
+
+export const initializeDatabase = async () => {
+  try {
+    try {
+      await primaryConnection.query(`CREATE DATABASE ${process.env.DB_NAME};`);
+    } catch (error) {}
+    primaryConnection.close();
+  } catch (error) {
+    console.log("error creating DB");
   }
 };
 

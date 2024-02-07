@@ -1,20 +1,24 @@
-# Assignment - 1
+# Assignment - 2
 
 - Download the repo as zip file
 - extrct the zip file
 
-## Pre-req:
+## Prerequisites:
 
 - npm must be installed
+- postgresql:15 must be installed and service shoule be started
+- there must exist a user "postgres" and password as "mypass"
 - have a local instance of postgres running in port **5432**
 - add sample env file:
 
 ```
-LOCAL_DB_USERNAME="<username>"
-LOCAL_DB_PASSWORD="<password>"
-LOCAL_DB_CONNECTION_STRING="postgres://<user_name>:<password>@localhost:5432/<db_name>"
-
+DB_USERNAME="postgres"
+DB_NAME="myapp"
+DB_PASSWORD="mypass"
+DB_PORT=5432
 PORT=3000
+
+
 ```
 
 ## 🚀 Instructions to run the project:
