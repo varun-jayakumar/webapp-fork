@@ -111,7 +111,8 @@ const validateCreateUserPlayload = (payload) => {
     payload.username &&
     payload.username.match(mailformat)
   ) {
-    return true;
+    if (Object.keys(payload).length == 4) return true;
+    return false;
   } else {
     return false;
   }
