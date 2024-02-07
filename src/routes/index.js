@@ -3,4 +3,8 @@ import userRouter from "./user-router.js";
 export default (app) => {
   app.use("/", mainRouter);
   app.use("/v1/user", userRouter);
+  app.all("*", (req, res) => {
+    res.status(404);
+    res.set("cache-control", "no-cache").end();
+  });
 };
