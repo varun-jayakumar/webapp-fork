@@ -1,6 +1,7 @@
 import express from "express";
 import { userController } from "../controller/index.js";
 import { middlewares } from "../middleware/index.js";
+import { method_not_allowed } from "./utility.js";
 
 const userRouter = express.Router();
 userRouter
@@ -18,5 +19,7 @@ userRouter
 userRouter
   .route("/")
   .post(middlewares.dbConnectionStatus, userController.createUserController);
+userRouter.route("/").all(method_not_allowed);
+userRouter.route("/self").all(method_not_allowed);
 
 export default userRouter;

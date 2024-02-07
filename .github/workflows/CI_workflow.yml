@@ -2,7 +2,7 @@ name: CI workflow
 run-name: Validate successful compilation of applicaiton 🚀
 on:
   pull_request:
-    types: [opened]
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
 jobs:
   validate-app-compilation:
