@@ -23,11 +23,11 @@ const authenticaiton = async (req, res, next) => {
         res.end();
       }
     } else {
-      res.status(400);
+      res.status(401);
       res.set("cache-control", "no-cache").end();
     }
   } else {
-    res.status(400);
+    res.status(401);
     res.set("cache-control", "no-cache").end();
   }
 };
