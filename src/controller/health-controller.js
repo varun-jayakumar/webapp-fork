@@ -17,7 +17,7 @@ export const health = async (req, res) => {
       await sequelize.authenticate();
       res.status(200);
       res.set("cache-control", "no-cache").end();
-    } catch {
+    } catch (e) {
       res.status(503);
       res.set("cache-control", "no-cache").end();
     }
