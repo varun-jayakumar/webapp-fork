@@ -30,7 +30,7 @@ const dbConnect = async () => {
     try {
       await sequelize.authenticate();
       if (global.dbConnectionstatus == false) {
-        console.log("DB is connected now");
+        if (process.env.NODE_ENV !== "test") console.log("DB is connected now");
       }
       global.dbConnectionstatus = true;
       if (!global.areModelsInitialized) {
@@ -39,7 +39,7 @@ const dbConnect = async () => {
       }
       await setTimeout(1000);
     } catch (error) {
-      console.log("waiting for DB...");
+      if (process.env.NODE_ENV !== "test") console.log("waiting for DB...");
       global.dbConnectionstatus = false;
       await setTimeout(1000);
     }
