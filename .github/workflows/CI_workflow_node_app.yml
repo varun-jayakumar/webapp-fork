@@ -1,4 +1,4 @@
-name: CI workflow
+name: CI workflow for App compilation
 run-name: Validate successful compilation of applicaiton 🚀
 on:
   pull_request:
