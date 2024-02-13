@@ -1,9 +1,9 @@
 import { Sequelize } from "sequelize";
 import { setTimeout } from "timers/promises";
-import initializeModels from "../src/models/index.js";
+import { sequelize } from "../src/config/database.js";
 
 // check if connection is available before running tests
-const waitForDbToInitialize = async () => {
+export const waitForDbToInitialize = async () => {
   let sequelize;
   while (true) {
     try {
@@ -29,8 +29,22 @@ const waitForDbToInitialize = async () => {
   return;
 };
 
-export const clearTablesBeforeEachTest = async () => {
-  initializeModels();
+export const dropDatabaseAfterTest = async () => {
+  sequelize.close();
+  const primaryConnection = new Sequelize(
+    "postgres",
+    process.env.DB_USERNAME,
+    process.env.DB_PASSWORD,
+    {
+      host: "localhost",
+      dialect: "postgres",
+      post: process.env.DB_PORT,
+      logging: false,
+    }
+  );
+  try {
+    await primaryConnection.query(`DROP DATABASE ${process.env.DB_NAME};`);
+  } catch (e) {
+    console.log("database was not dropped", e);
+  }
 };
-
-export default waitForDbToInitialize;

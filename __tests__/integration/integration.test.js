@@ -1,12 +1,20 @@
 const request = require("supertest");
 import app from "../../src/app.js";
-import waitForDbToInitialize from "../../testSetup/db-setup.js";
+import {
+  waitForDbToInitialize,
+  dropDatabaseAfterTest,
+} from "../../testSetup/db-setup.js";
 var base64 = require("base-64");
 var utf8 = require("utf8");
 
 describe("/healthz and /v1/user/*", () => {
   beforeAll(async () => {
     return await waitForDbToInitialize();
+  }, 30000);
+
+  afterAll(async () => {
+    await dropDatabaseAfterTest();
+    return;
   });
 
   it("POST /v1/user and GET /v1/user/self to validate account creation", async () => {
