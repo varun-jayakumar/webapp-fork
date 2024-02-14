@@ -21,7 +21,7 @@ jobs:
           sudo systemctl enable postgresql
           sudo systemctl start postgresql
       - name: change passoword of user
-        run: psql -U postgres -c "ALTER USER ${{ secrets.DB_USERNAME }} PASSWORD '${{ secrets.DB_PASSWORD }}';"
+        run: sudo psql -U postgres -c "ALTER USER ${{ secrets.DB_USERNAME }} PASSWORD '${{ secrets.DB_PASSWORD }}';"
       - name: Test env variables from secrets
         run: |
           echo ${{ secrets.DB_USERNAME }}
