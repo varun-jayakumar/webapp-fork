@@ -9,10 +9,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "20.x"
       - name: install dependencies
         run: npm i
+      - name: Install PostgresSQL
+        run: sudo apt install -y postgresql-15 postgresql-client-15
+          sudo systemctl enable postgresql
+          sudo systemctl start postgresql
+      - name: Test env variables from secrets
+        run: |
+          echo $PG_DB
+      - name: Create the .env file and write the environment variables to it
+        run: |
+          cat << EOF > .env
+          PG_USER=${{ secrets.PG_USER }}
+          PG_PASSWORD=${{ secrets.PG_PASSWORD }}
+          PG_DB=${{ secrets.PG_DB }}
+          PG_HOST=${{ secrets.PG_HOST }}
+          EOF
+          echo ".env file created with the specified content."
+      - name: Run tests
+        run: npm test
