@@ -16,7 +16,8 @@ jobs:
       - name: install dependencies
         run: npm i
       - name: Install PostgresSQL
-        run: sudo apt install -y postgresql-14 postgresql-client-14
+        run: |
+          sudo apt install -y postgresql-14 postgresql-client-14
           sudo systemctl enable postgresql
           sudo systemctl start postgresql
       - name: Test env variables from secrets
