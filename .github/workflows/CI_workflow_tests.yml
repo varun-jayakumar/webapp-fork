@@ -33,5 +33,6 @@ jobs:
           PORT=${{ secrets.PORT }}
           EOF
           echo ".env file created with the specified content."
+      - run: cat .env
       - name: Run tests
         run: npm test
