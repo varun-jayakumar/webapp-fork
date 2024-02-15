@@ -22,10 +22,7 @@ jobs:
           sudo systemctl start postgresql
       - name: change passoword of user
         run: sudo -u postgres psql -c "ALTER USER ${{ secrets.DB_USERNAME }} PASSWORD '${{ secrets.DB_PASSWORD }}';"
-      - name: Test env variables from secrets
-        run: |
-          echo ${{ secrets.DB_USERNAME }}
-      - name: Create the .env file and write the environment variables to it
+      - name: Create the .env file
         run: |
           cat << EOF > .env
           DB_USERNAME=${{ secrets.DB_USERNAME }}
