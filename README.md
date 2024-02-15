@@ -8,7 +8,7 @@
 - npm must be installed
 - postgresql:15 must be installed and service shoule be started
 - there must exist a user "postgres" and password as "<your_password>"
-- have a local instance of postgres running in port **5432**
+- have a local instance of postgres running in port \*_5432_
 - add sample env file:
 
 example .env file
