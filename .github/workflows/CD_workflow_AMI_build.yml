@@ -1,4 +1,4 @@
-name: CD_wowrkflow_AMI
+name: CD_workflow_AMI
 run-name: Build and store AMI on gcloud with packer
 on:
   pull_request:
