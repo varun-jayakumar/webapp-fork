@@ -15,16 +15,12 @@ jobs:
       - uses: actions/checkout@v4
       - name: "current path"
         run: "pwd"
-      - name: "current files in directory"
-        run: |
-          cd /home/runner/work/webapp-fork/
-          ls
       - name: "install zip package"
         run: "sudo apt install zip"
       - name: "zip the repository"
         run: |
-          zip -r webapp.zip . -i webapp-fork
-          cd webapp-fork
+          zip -r release.zip .
+          ls
       - name: Setup `packer`
         uses: hashicorp/setup-packer@main
         id: setup
