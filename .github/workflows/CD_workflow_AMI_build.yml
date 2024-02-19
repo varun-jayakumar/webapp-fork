@@ -2,8 +2,6 @@ name: CD_workflow_AMI
 run-name: Build and store AMI on gcloud with packer
 on:
   pull_request:
-    branches:
-      - main
     types: [closed]
   workflow_dispatch:
 env:
@@ -18,7 +16,7 @@ jobs:
       - name: "current path"
         run: "pwd"
       - name: "current files in directory"
-        run: "ls"
+        run: ls
       - uses: montudor/action-zip@v1
         with:
           args: zip -qq -r webapp.zip webapp
