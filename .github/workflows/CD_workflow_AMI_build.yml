@@ -19,9 +19,12 @@ jobs:
         run: |
           cd /home/runner/work/webapp-fork/
           ls
-      - uses: montudor/action-zip@v1
-        with:
-          args: zip webapp.zip webapp-fork
+      - name: "install zip package"
+        run: "sudo apt install zip"
+      - name: "zip the repository"
+        run: |
+          zip ./webapp.zip ./webapp-fork
+          cd ./webapp-fork
       - name: Setup `packer`
         uses: hashicorp/setup-packer@main
         id: setup
