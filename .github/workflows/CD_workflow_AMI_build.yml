@@ -16,7 +16,8 @@ jobs:
       - name: "current path"
         run: "pwd"
       - name: "current files in directory"
-        run: /home/runner/work/webapp-fork/
+        run: |
+          /home/runner/work/webapp-fork/
           ls
       - uses: montudor/action-zip@v1
         with:
