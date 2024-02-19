@@ -2,13 +2,16 @@ name: CI_workflow_packer
 run-name: Build and store AMI on gcloud with packer
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    branches:
+      - main
+    types: [closed]
   workflow_dispatch:
 env:
   PRODUCT_VERSION: "latest"
 
 jobs:
   build-ami-with-packer:
+    if: ${{ github.event.pull_request.merged }} ||  ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,10 +20,6 @@ jobs:
         id: setup
         with:
           version: ${{ env.PRODUCT_VERSION }}
-
-      - name: Run `packer init`
-        id: init
-        run: "packer init ."
 
       - id: "auth"
         uses: "google-github-actions/auth@v2"
@@ -32,3 +31,18 @@ jobs:
 
       - name: "Use gcloud CLI"
         run: "gcloud info"
+
+      - name: Run `packer init`
+        id: init
+        run: "packer init ."
+
+      - name: Run `packer fmt`
+        run: "packer fmt -check ."
+
+      - name: Run `packer validate`
+        id: validate
+        run: "packer validate ."
+
+      - name: Run `packer build`
+        id: build
+        run: "packer build ."
