@@ -13,14 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: "current path"
-        run: "pwd"
       - name: "install zip package"
         run: "sudo apt install zip"
       - name: "zip the repository"
         run: |
-          zip -r release.zip .
-          ls
+          zip -r webapp.zip .
       - name: Setup `packer`
         uses: hashicorp/setup-packer@main
         id: setup

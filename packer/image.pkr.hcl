@@ -17,9 +17,13 @@ source "googlecompute" "vm" {
 build {
   sources = ["sources.googlecompute.vm"]
   provisioner "file" {
-  source = "/webapp.zip"
+  source = "webapp.zip"
   destination = "/tmp/webapp.zip"
   }
+  provisioner "shell" {
+    inline = ["cd /temp/", "ls"]
+}
+
 
 
   // scripts =["./scripts/install_dependencies.sh", "./setup_env.sh", ""]
