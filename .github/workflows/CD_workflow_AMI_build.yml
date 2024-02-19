@@ -15,6 +15,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: "current path"
+        run: "pwd"
+      - name: "current files in directory"
+        run: "ls"
+      - uses: montudor/action-zip@v1
+        with:
+          args: zip -qq -r webapp.zip webapp
       - name: Setup `packer`
         uses: hashicorp/setup-packer@main
         id: setup
@@ -34,15 +41,15 @@ jobs:
 
       - name: Run `packer init`
         id: init
-        run: "packer init ."
+        run: "packer init ./packer/"
 
       - name: Run `packer fmt`
-        run: "packer fmt -check ."
+        run: "packer fmt -check ./packer/"
 
       - name: Run `packer validate`
         id: validate
-        run: "packer validate ."
+        run: "packer validate ./packer/"
 
       - name: Run `packer build`
         id: build
-        run: "packer build ."
+        run: "packer build ./packer/"
