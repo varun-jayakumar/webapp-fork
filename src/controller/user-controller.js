@@ -93,7 +93,7 @@ export const getUserController = async (req, res) => {
     JSON.stringify({
       id: userData.id,
       first_name: userData.first_name,
-      last_name: userData.last_name,
+      last_name: userData.last_name + "Some",
       username: userData.username,
       account_created: userData.account_created,
       account_updated: userData.account_updated,
