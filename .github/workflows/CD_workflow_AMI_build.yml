@@ -1,0 +1,34 @@
+name: CI_workflow_packer
+run-name: Build and store AMI on gcloud with packer
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+env:
+  PRODUCT_VERSION: "latest"
+
+jobs:
+  build-ami-with-packer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup `packer`
+        uses: hashicorp/setup-packer@main
+        id: setup
+        with:
+          version: ${{ env.PRODUCT_VERSION }}
+
+      - name: Run `packer init`
+        id: init
+        run: "packer init ."
+
+      - id: "auth"
+        uses: "google-github-actions/auth@v2"
+        with:
+          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v2"
+
+      - name: "Use gcloud CLI"
+        run: "gcloud info"
