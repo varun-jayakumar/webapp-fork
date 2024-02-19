@@ -23,7 +23,7 @@ jobs:
         run: "sudo apt install zip"
       - name: "zip the repository"
         run: |
-          zip -r webapp.zip webapp-fork
+          zip -r webapp.zip . -i webapp-fork
           cd webapp-fork
       - name: Setup `packer`
         uses: hashicorp/setup-packer@main
