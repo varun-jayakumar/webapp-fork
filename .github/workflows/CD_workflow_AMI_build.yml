@@ -21,7 +21,7 @@ jobs:
           ls
       - uses: montudor/action-zip@v1
         with:
-          args: zip -qq -r webapp.zip webapp-fork
+          args: zip webapp.zip webapp-fork
       - name: Setup `packer`
         uses: hashicorp/setup-packer@main
         id: setup
