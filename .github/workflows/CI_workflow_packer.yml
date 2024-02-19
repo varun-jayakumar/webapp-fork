@@ -23,7 +23,7 @@ jobs:
         run: "packer init ."
 
       - name: Run `packer fmt`
-        run: "packer fmt ."
+        run: "packer fmt -check ."
 
       - name: Run `packer validate`
         id: validate
