@@ -6,7 +6,7 @@ cd /opt/ || exit 1
 sudo mkdir webapp
 ls
 cd webapp || exit 1
-unzip -d /opt/webapp/ /tmp/webapp.zip
+sudo unzip -d /opt/webapp/ /tmp/webapp.zip
 ls
 sudo cp -r /tmp/webapp-main /opt/webapp
 sudo cp /tmp/.env /opt/webapp/.env
