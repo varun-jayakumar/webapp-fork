@@ -26,7 +26,7 @@ build {
     destination = "/tmp/.env"
   }
   provisioner "shell" {
-    scripts = ["./scripts/install_dependencies.sh", "./scripts/setup_application_directory.sh", "./scripts/setup_user_change_persmissions.sh", "./scripts/create_systemd_file.sh"]
+    scripts = ["./packer/scripts/install_dependencies.sh", "./packer/scripts/setup_application_directory.sh", "./packer/scripts/setup_user_change_persmissions.sh", "./packer/scripts/create_systemd_file.sh"]
   }
 
 
