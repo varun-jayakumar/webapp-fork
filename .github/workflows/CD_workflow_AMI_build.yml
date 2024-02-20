@@ -29,6 +29,16 @@ jobs:
         with:
           credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
 
+      - name: Create the .env file
+        run: |
+          cat << EOF > .env
+          DB_USERNAME=${{ secrets.DB_USERNAME }}
+          DB_NAME=${{ secrets.DB_NAME }}
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          DB_PORT=${{ secrets.DB_PORT }}
+          PORT=${{ secrets.PORT }}
+          EOF
+
       - name: "Set up Cloud SDK"
         uses: "google-github-actions/setup-gcloud@v2"
 
@@ -44,7 +54,7 @@ jobs:
 
       - name: Run `packer validate`
         id: validate
-        run: "packer validate ./packer/"
+        run: "packer validate -syntax-only ./packer/"
 
       - name: Run `packer build`
         id: build

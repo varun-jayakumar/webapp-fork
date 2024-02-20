@@ -12,17 +12,22 @@ source "googlecompute" "vm" {
   source_image = "centos-stream-8-v20240110"
   ssh_username = "centOs"
   zone         = "us-central1-a"
+  image_name   = "webapp-image-{{timestamp}}"
 }
 
 build {
   sources = ["sources.googlecompute.vm"]
-  provisioner "file" {
-  source = "webapp.zip"
-  destination = "/tmp/webapp.zip"
+  provisioner "file"{
+    source      = "webapp.zip"
+    destination = "/tmp/webapp.zip"
+  }
+  provisioner "file"{
+    source      = "../.env"
+    destination = "/tmp/.env"
   }
   provisioner "shell" {
-    inline = ["cd /temp/", "ls"]
-}
+    scripts = ["./scripts/install_dependencies.sh","./scripts/setup_application_directory.sh", "./scripts/setup_user_change_persmissions.sh", "./scripts/create_systemd_file.sh"]
+  }
 
 
 
