@@ -17,16 +17,16 @@ source "googlecompute" "vm" {
 
 build {
   sources = ["sources.googlecompute.vm"]
-  provisioner "file"{
+  provisioner "file" {
     source      = "webapp.zip"
     destination = "/tmp/webapp.zip"
   }
-  provisioner "file"{
+  provisioner "file" {
     source      = "../.env"
     destination = "/tmp/.env"
   }
   provisioner "shell" {
-    scripts = ["./scripts/install_dependencies.sh","./scripts/setup_application_directory.sh", "./scripts/setup_user_change_persmissions.sh", "./scripts/create_systemd_file.sh"]
+    scripts = ["./scripts/install_dependencies.sh", "./scripts/setup_application_directory.sh", "./scripts/setup_user_change_persmissions.sh", "./scripts/create_systemd_file.sh"]
   }
 
 
