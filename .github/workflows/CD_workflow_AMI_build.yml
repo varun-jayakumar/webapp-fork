@@ -18,6 +18,32 @@ jobs:
       - name: "zip the repository"
         run: |
           zip -r webapp.zip .
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20.x"
+      - name: install dependencies
+        run: npm i
+      - name: Install PostgresSQL
+        run: |
+          sudo apt install -y postgresql-14 postgresql-client-14
+          sudo systemctl enable postgresql
+          sudo systemctl start postgresql
+      - name: change passoword of user
+        run: sudo -u postgres psql -c "ALTER USER ${{ secrets.DB_USERNAME }} PASSWORD '${{ secrets.DB_PASSWORD }}';"
+      - name: Create the .env file
+        run: |
+          cat << EOF > .env
+          DB_USERNAME=${{ secrets.DB_USERNAME }}
+          DB_NAME=${{ secrets.DB_NAME }}
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          DB_PORT=${{ secrets.DB_PORT }}
+          PORT=${{ secrets.PORT }}
+          EOF
+          echo ".env file created with the specified content."
+      - run: cat .env
+      - name: Run tests
+        run: npm test
       - name: Setup `packer`
         uses: hashicorp/setup-packer@main
         id: setup
@@ -28,16 +54,6 @@ jobs:
         uses: "google-github-actions/auth@v2"
         with:
           credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
-
-      - name: Create the .env file
-        run: |
-          cat << EOF > .env
-          DB_USERNAME=${{ secrets.DB_USERNAME }}
-          DB_NAME=${{ secrets.DB_NAME }}
-          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-          DB_PORT=${{ secrets.DB_PORT }}
-          PORT=${{ secrets.PORT }}
-          EOF
 
       - name: "Set up Cloud SDK"
         uses: "google-github-actions/setup-gcloud@v2"
@@ -58,4 +74,4 @@ jobs:
 
       - name: Run `packer build`
         id: build
-        run: "packer build ./packer/"
+        run: "packer build -var-file=./packer/var.pkrvars.hcl  ./packer/"
