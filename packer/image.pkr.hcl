@@ -8,7 +8,7 @@ packer {
 }
 
 source "googlecompute" "vm" {
-  project_id   = "cloudspring2024-demo"
+  project_id   = "cloudspring2024-dev"
   source_image = "centos-stream-8-v20240110"
   ssh_username = "centOs"
   zone         = "us-central1-a"
