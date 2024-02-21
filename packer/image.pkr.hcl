@@ -13,6 +13,7 @@ source "googlecompute" "vm" {
   ssh_username = "centOs"
   zone         = "us-central1-a"
   image_name   = "webapp-image-{{timestamp}}"
+  image_family = "csye6225"
 }
 
 build {
