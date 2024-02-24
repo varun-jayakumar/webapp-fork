@@ -7,7 +7,7 @@ export let primaryConnection = new Sequelize(
   process.env.DB_USERNAME,
   process.env.DB_PASSWORD,
   {
-    host: "localhost",
+    host: process.env.DB_HOST,
     dialect: "postgres",
     post: process.env.DB_PORT,
     logging: false,
@@ -20,7 +20,7 @@ const dbConnect = async () => {
     process.env.DB_USERNAME,
     process.env.DB_PASSWORD,
     {
-      host: "localhost",
+      host: process.env.DB_HOST,
       dialect: "postgres",
       post: process.env.DB_PORT,
       logging: false,
