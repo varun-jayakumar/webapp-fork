@@ -39,6 +39,7 @@ jobs:
           DB_PASSWORD=${{ secrets.DB_PASSWORD }}
           DB_PORT=${{ secrets.DB_PORT }}
           PORT=${{ secrets.PORT }}
+          DB_PORT=${{ secrets.DB_HOST }}
           EOF
           echo ".env file created with the specified content."
       - run: cat .env
