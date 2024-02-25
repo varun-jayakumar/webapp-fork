@@ -22,10 +22,10 @@ build {
     source      = var.webapp_file.source
     destination = var.webapp_file.destination
   }
-  provisioner "file" {
-    source      = var.env_file.source
-    destination = var.env_file.destination
-  }
+  // provisioner "file" {
+  //   source      = var.env_file.source
+  //   destination = var.env_file.destination
+  // }
   provisioner "shell" {
     scripts = var.shell_scripts
   }
