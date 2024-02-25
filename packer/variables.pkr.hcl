@@ -16,7 +16,7 @@ variable "webapp_file" {
   })
 }
 
-variable "env_file" {
+variable "systemd_file" {
   type = object({
     source      = string
     destination = string
