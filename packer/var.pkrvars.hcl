@@ -12,9 +12,9 @@ webapp_file = {
   destination = "/tmp/webapp.zip"
 }
 
-env_file = {
-  source      = ".env"
-  destination = "/tmp/.env"
+systemd_file = {
+  source      = "./packer/csye6225.service"
+  destination = "/tmp/csye6225.service"
 }
 
 shell_scripts = ["./packer/scripts/install_dependencies.sh", "./packer/scripts/setup_application_directory.sh", "./packer/scripts/setup_user_change_persmissions.sh", "./packer/scripts/create_systemd_file.sh"]
