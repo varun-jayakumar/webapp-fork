@@ -8,4 +8,3 @@ ls
 cd webapp || exit 1
 sudo unzip -d /opt/webapp/ /tmp/webapp.zip
 ls
-sudo cp /tmp/.env /opt/webapp/.env
