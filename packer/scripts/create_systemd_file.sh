@@ -23,6 +23,5 @@ WantedBy=multi-user.target
 EOF'
 
 sudo systemctl daemon-reload
-sudo systemctl start csye6225.service
 sudo systemctl enable csye6225.service 
 
