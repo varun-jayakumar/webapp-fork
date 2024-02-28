@@ -17,7 +17,10 @@ jobs:
         id: setup
         with:
           version: ${{ env.PRODUCT_VERSION }}
-
+      - namn: create .env and webapp.zip
+        run: |
+          "touch webapp.zip"
+          "touch .env"
       - name: Run `packer init`
         id: init
         run: "packer init ./packer/"
@@ -27,4 +30,4 @@ jobs:
 
       - name: Run `packer validate`
         id: validate
-        run: "packer validate -syntax-only ./packer/"
+        run: "packer validate -var-file=./packer/var.pkrvars.hcl ./packer"
