@@ -1,9 +1,9 @@
 import { DataTypes } from "sequelize";
 
 const user_model = {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
+  uuid: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV1,
     primaryKey: true,
   },
   first_name: {
