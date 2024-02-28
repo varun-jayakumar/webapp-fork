@@ -8,7 +8,7 @@ packer {
 }
 
 source "googlecompute" "vm" {
-  project_id   = var.vm.project_id
+  project_id   = var.vm.project_i
   source_image = var.vm.source_image
   ssh_username = var.vm.ssh_username
   zone         = var.vm.zone
