@@ -19,8 +19,8 @@ jobs:
           version: ${{ env.PRODUCT_VERSION }}
       - name: create .env and webapp.zip
         run: |
-          "touch webapp.zip"
-          "touch .env"
+          touch webapp.zip
+          touch .env
       - name: Run `packer init`
         id: init
         run: "packer init ./packer/"
