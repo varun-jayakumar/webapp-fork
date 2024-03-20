@@ -5,10 +5,12 @@ const logger = createLogger({
   levels: config.npm.levels,
   format: combine(format.json(), timestamp()),
   defaultMeta: { service: "webapp-service" },
-  transports: [new transports.File({ filename: "/var/log/webapp/webapp.log" })],
+  transports: [],
 });
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV === "production") {
+  logger.add(new transports.File({ filename: "/var/log/webapp/webapp.log" }));
+} else {
   logger.add(
     new transports.Console({
       format: format.json(),
