@@ -24,8 +24,10 @@ variable "systemd_file" {
 }
 
 variable "ops_agent_config_file" {
-  source = string
-  destination = string
+  type = object({
+    source      = string
+    destination = string
+  })
 }
 
 variable "shell_scripts" {
