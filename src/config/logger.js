@@ -16,4 +16,9 @@ if (process.env.NODE_ENV !== "production") {
   );
 }
 
+logger.error("test error loggger level");
+logger.debug("test debug logger level");
+logger.warn("test warn logger level");
+logger.info("test warn logger level");
+
 export default logger;
