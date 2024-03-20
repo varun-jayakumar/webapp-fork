@@ -28,10 +28,10 @@ build {
   }
 
   provisioner "file" {
-    source = var.ops_agent_config_file.source
+    source      = var.ops_agent_config_file.source
     destination = var.ops_agent_config_file.destination
   }
-  
+
   provisioner "shell" {
     scripts = var.shell_scripts
   }

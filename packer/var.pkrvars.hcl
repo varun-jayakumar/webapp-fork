@@ -22,5 +22,5 @@ ops_agent_config_file = {
   destination = "/tmp/config.yml"
 }
 
-shell_scripts = ["./packer/scripts/install_dependencies.sh", "./packer/scripts/setup_application_directory.sh", "./packer/scripts/setup_user_change_persmissions.sh", "./packer/scripts/create_systemd_file.sh", "./packer/scripts/packer/scripts/install_ops_agent.sh"]
+shell_scripts = ["./packer/scripts/install_dependencies.sh", "./packer/scripts/setup_application_directory.sh", "./packer/scripts/setup_user_change_persmissions.sh", "./packer/scripts/create_systemd_file.sh", "./packer/scripts/install_ops_agent.sh"]
 
