@@ -54,7 +54,7 @@ export const initializeDatabase = async () => {
     } catch (error) {}
     primaryConnection.close();
   } catch (error) {
-    logger.error("error creating DB");
+    logger.error({ message: "error creating DB", error: error });
   }
 };
 
