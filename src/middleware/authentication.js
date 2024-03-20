@@ -1,3 +1,4 @@
+import logger from "../config/logger.js";
 import { userService } from "../services/index.js";
 import bcrypt from "bcrypt";
 
@@ -18,15 +19,18 @@ const authenticaiton = async (req, res, next) => {
         res.locals.userData = userData;
         next();
       } else {
+        logger.debug("Authentication Failed");
         res.status(401);
         res.set("cache-control", "no-cache");
         res.end();
       }
     } else {
+      logger.debug("Authentication Failed");
       res.status(401);
       res.set("cache-control", "no-cache").end();
     }
   } else {
+    logger.debug("Authentication Failed");
     res.status(401);
     res.set("cache-control", "no-cache").end();
   }
