@@ -1,5 +1,5 @@
 import { createLogger, format, transports, config } from "winston";
-const { combine, timestamp, label, prettyPrint, colorize } = format;
+const { combine, timestamp } = format;
 
 const logger = createLogger({
   levels: config.npm.levels,
@@ -9,7 +9,12 @@ const logger = createLogger({
 });
 
 if (process.env.NODE_ENV === "production") {
-  logger.add(new transports.File({ filename: "/var/log/webapp/webapp.log" }));
+  logger.add(
+    new transports.File({
+      filename: "/var/log/webapp/webapp.log",
+      format: format.combine(timestamp(), format.json()),
+    })
+  );
 } else {
   logger.add(
     new transports.Console({
@@ -21,6 +26,6 @@ if (process.env.NODE_ENV === "production") {
 logger.error("test error loggger level");
 logger.debug("test debug logger level");
 logger.warn("test warn logger level");
-logger.info("test warn logger level");
+logger.info("test info logger level");
 
 export default logger;
