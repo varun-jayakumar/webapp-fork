@@ -8,7 +8,8 @@ User=csye6225
 Group=csye6225
 WorkingDirectory=/opt/webapp/
 ExecStartPre=/bin/bash -c 'while true; do if [ -f /opt/webapp/.env ]; then echo "File exists. Exiting."; exit 0; else echo "File does not exist. Retrying in 1 second..."; sleep 1; fi; done '
-ExecStart=NODE_ENV=production /usr/bin/node -r dotenv/config /opt/webapp/server.js
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node -r dotenv/config /opt/webapp/server.js
 Restart=always
 RestartSec=3
 StandardOutput=syslog
