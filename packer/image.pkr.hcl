@@ -26,6 +26,12 @@ build {
     source      = var.systemd_file.source
     destination = var.systemd_file.destination
   }
+
+  provisioner "file" {
+    source = var.ops_agent_config_file.source
+    destination = var.ops_agent_config_file.destination
+  }
+  
   provisioner "shell" {
     scripts = var.shell_scripts
   }
