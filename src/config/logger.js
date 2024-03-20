@@ -2,7 +2,7 @@ import { createLogger, format, transports, config } from "winston";
 const { combine, timestamp } = format;
 
 const logger = createLogger({
-  levels: config.npm.levels,
+  level: "debug",
   format: combine(format.json(), timestamp()),
   defaultMeta: { service: "webapp-service" },
   transports: [],
