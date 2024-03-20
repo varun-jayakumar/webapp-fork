@@ -7,19 +7,31 @@ const userRouter = express.Router();
 userRouter
   .route("/self")
   .get(
-    [middlewares.dbConnectionStatus, middlewares.authenticaiton],
+    [
+      middlewares.requestLogger,
+      middlewares.dbConnectionStatus,
+      middlewares.authenticaiton,
+    ],
     userController.getUserController
   );
 userRouter
   .route("/self")
   .put(
-    [middlewares.dbConnectionStatus, middlewares.authenticaiton],
+    [
+      middlewares.requestLogger,
+      middlewares.dbConnectionStatus,
+      middlewares.authenticaiton,
+    ],
     userController.updateUserController
   );
 userRouter
   .route("/")
-  .post(middlewares.dbConnectionStatus, userController.createUserController);
-userRouter.route("/").all(method_not_allowed);
-userRouter.route("/self").all(method_not_allowed);
+  .post(
+    middlewares.requestLogger,
+    middlewares.dbConnectionStatus,
+    userController.createUserController
+  );
+userRouter.route("/").all(middlewares.requestLogger, method_not_allowed);
+userRouter.route("/self").all(middlewares.requestLogger, method_not_allowed);
 
 export default userRouter;
