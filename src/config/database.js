@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize";
 import { setTimeout } from "timers/promises";
 import defineAndValidateModels from "../models/index.js";
+import logger from "./logger.js";
 export let sequelize;
 export let primaryConnection = new Sequelize(
   "postgres",
@@ -30,7 +31,7 @@ const dbConnect = async () => {
     try {
       await sequelize.authenticate();
       if (global.dbConnectionstatus == false) {
-        if (process.env.NODE_ENV !== "test") console.log("DB is connected now");
+        if (process.env.NODE_ENV !== "test") logger.info("DB is connected now");
       }
       global.dbConnectionstatus = true;
       if (!global.areModelsInitialized) {
@@ -39,7 +40,7 @@ const dbConnect = async () => {
       }
       await setTimeout(1000);
     } catch (error) {
-      if (process.env.NODE_ENV !== "test") console.log("waiting for DB...");
+      if (process.env.NODE_ENV !== "test") logger.warn("Waiting for DB...");
       global.dbConnectionstatus = false;
       await setTimeout(1000);
     }
@@ -53,7 +54,7 @@ export const initializeDatabase = async () => {
     } catch (error) {}
     primaryConnection.close();
   } catch (error) {
-    console.log("error creating DB");
+    logger.error("error creating DB");
   }
 };
 

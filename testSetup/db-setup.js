@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize";
 import { setTimeout } from "timers/promises";
 import { sequelize } from "../src/config/database.js";
+import logger from "../src/config/logger.js";
 
 // check if connection is available before running tests
 export const waitForDbToInitialize = async () => {
@@ -45,6 +46,6 @@ export const dropDatabaseAfterTest = async () => {
   try {
     await primaryConnection.query(`DROP DATABASE ${process.env.DB_NAME};`);
   } catch (e) {
-    console.log("database was not dropped", e);
+    logger.error({ message: "error dropping DB", error: e });
   }
 };

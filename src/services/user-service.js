@@ -1,3 +1,4 @@
+import logger from "../config/logger.js";
 import { User } from "../models/index.js";
 
 export const findOneByUsername = async (username) => {
@@ -32,7 +33,7 @@ export const saveUser = async (
 
     return createdUser;
   } catch (e) {
-    console.log("error while createing user", e);
+    logger.error("error while createing user", e);
   }
 };
 
@@ -49,6 +50,6 @@ export const updateUser = async (updatePayload, username) => {
       },
     });
   } catch (error) {
-    console.log(error);
+    console.error({ message: "error updating user", error: error });
   }
 };

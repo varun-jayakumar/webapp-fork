@@ -1,5 +1,6 @@
 import user_model from "./user.js";
 import { sequelize } from "../config/database.js";
+import logger from "../config/logger.js";
 
 export let User;
 
@@ -15,7 +16,7 @@ export const initializeModels = () => {
 const validateInitializtion = () => {
   if (User === sequelize.models.User) {
   } else {
-    console.log("table validation failed");
+    logger.error("table validation failed");
   }
 };
 
