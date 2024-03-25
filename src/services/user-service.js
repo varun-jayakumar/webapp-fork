@@ -26,6 +26,9 @@ export const saveUser = async (
       last_name: lastName,
       username: username,
       password: password,
+      is_verificationEmail_sent: false,
+      is_verified: false,
+      verification_token: null,
       account_created: accountCreated,
       account_updated: accountUpdated,
     };
@@ -43,6 +46,18 @@ export const getUser = async (username) => {
 };
 
 export const updateUser = async (updatePayload, username) => {
+  try {
+    await User.update(updatePayload, {
+      where: {
+        username: username,
+      },
+    });
+  } catch (error) {
+    console.error({ message: "error updating user", error: error });
+  }
+};
+
+export const updateUserVerificationStatus = async (updatePayload, username) => {
   try {
     await User.update(updatePayload, {
       where: {

@@ -31,6 +31,13 @@ userRouter
     middlewares.dbConnectionStatus,
     userController.createUserController
   );
+userRouter
+  .route("/verify")
+  .post(
+    middlewares.requestLogger,
+    middlewares.dbConnectionStatus,
+    userController.verifyUserController
+  );
 userRouter.route("/").all(middlewares.requestLogger, method_not_allowed);
 userRouter.route("/self").all(middlewares.requestLogger, method_not_allowed);
 

@@ -2,9 +2,12 @@ import {
   saveUser,
   doesUserAlreadyExist,
   updateUser,
+  getUser,
 } from "../services/user-service.js";
-
+import { publishMessage } from "../services/pubSub-service.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
 export const createUserController = async (req, res) => {
   let passwordHash;
   let accountCreated;
@@ -37,6 +40,8 @@ export const createUserController = async (req, res) => {
     accountCreated,
     accountUpdated
   );
+  await publishMessage(createdUser.username);
+
   const createdUserData = createdUser.dataValues;
   res.status(201);
   res.set("cache-control", "no-cache");
@@ -55,6 +60,8 @@ export const createUserController = async (req, res) => {
 };
 
 export const updateUserController = async (req, res) => {
+  const username = res.locals.username;
+  const userData = getUser(username);
   let payload = req.body;
   if (validateUpdateUserPayload(payload)) {
     const currentDate = new Date().toISOString();
@@ -64,6 +71,7 @@ export const updateUserController = async (req, res) => {
       passwordHash = bcrypt.hashSync(payload.password, salt);
     }
     let updatePayload = {
+      ...userData,
       ...(payload.first_name !== undefined && {
         first_name: payload.first_name,
       }),
@@ -100,6 +108,35 @@ export const getUserController = async (req, res) => {
     })
   );
   return;
+};
+
+export const verifyUserController = async (req, res) => {
+  const token = req.query.token;
+  try {
+    const decoded = jwt.verify(token, process.env.TOKEN_SECRET_KEY);
+    console.log(decoded);
+    const username = decoded.email;
+    const userData = getUser(username);
+    if (userData.token === token) {
+      await updateUser({ ...userData, is_verified: true });
+    } else {
+      res.status(400);
+      res.body({
+        status: "error",
+        error: "BadToken",
+        message: "The email verification link has bad token",
+      });
+      res.set("cache-control", "no-cache").end();
+    }
+  } catch (e) {
+    res.status(400);
+    res.body({
+      status: "error",
+      error: "TokenExpired",
+      message: "The email verification link has expired",
+    });
+    res.set("cache-control", "no-cache").end();
+  }
 };
 
 const validateCreateUserPlayload = (payload) => {

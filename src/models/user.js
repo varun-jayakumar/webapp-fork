@@ -30,6 +30,18 @@ const user_model = {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  verification_token: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  is_verificationEmail_sent: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+  },
+  is_verified: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+  },
 };
 
 export default user_model;
