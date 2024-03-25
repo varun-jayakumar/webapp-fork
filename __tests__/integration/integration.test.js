@@ -15,7 +15,7 @@ describe("/healthz and /v1/user/*", () => {
   afterAll(async () => {
     await dropDatabaseAfterTest();
     return;
-  });
+  }, 30000);
 
   it("POST /v1/user and GET /v1/user/self to validate account creation", async () => {
     const userCreationPayload = {
