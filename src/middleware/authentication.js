@@ -11,18 +11,25 @@ const authenticaiton = async (req, res, next) => {
 
     if (await userService.doesUserAlreadyExist(username)) {
       let user = await userService.findOneByUsername(username);
+      res.locals.username = username;
       let userData = user.dataValues;
-      let passwordHash = userData.password;
-      let isPasswordValid = bcrypt.compareSync(passwordplain, passwordHash);
+      if (userData.is_verified) {
+        let passwordHash = userData.password;
+        let isPasswordValid = bcrypt.compareSync(passwordplain, passwordHash);
 
-      if (isPasswordValid) {
-        res.locals.userData = userData;
-        next();
+        if (isPasswordValid) {
+          res.locals.userData = userData;
+          next();
+        } else {
+          logger.debug("Authentication Failed");
+          res.status(401);
+          res.set("cache-control", "no-cache");
+          res.end();
+        }
       } else {
-        logger.debug("Authentication Failed");
-        res.status(401);
-        res.set("cache-control", "no-cache");
-        res.end();
+        logger.debug("User Not Verified, Failing Request");
+        res.status(403);
+        res.set("cache-control", "no-cache").end();
       }
     } else {
       logger.debug("Authentication Failed");
