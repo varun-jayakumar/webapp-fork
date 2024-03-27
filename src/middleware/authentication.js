@@ -21,23 +21,23 @@ const authenticaiton = async (req, res, next) => {
           res.locals.userData = userData;
           next();
         } else {
-          logger.debug("Authentication Failed");
+          logger.warn("Authentication Failed");
           res.status(401);
           res.set("cache-control", "no-cache");
           res.end();
         }
       } else {
-        logger.debug("User Not Verified, Failing Request");
+        logger.warn("User Not Verified, Failing Request");
         res.status(403);
         res.set("cache-control", "no-cache").end();
       }
     } else {
-      logger.debug("Authentication Failed");
+      logger.warn("Authentication Failed");
       res.status(401);
       res.set("cache-control", "no-cache").end();
     }
   } else {
-    logger.debug("Authentication Failed");
+    logger.warn("Authentication Failed");
     res.status(401);
     res.set("cache-control", "no-cache").end();
   }
