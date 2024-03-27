@@ -7,6 +7,7 @@ import {
 } from "../services/user-service.js";
 import { publishMessage } from "../services/pubSub-service.js";
 import bcrypt from "bcrypt";
+import logger from "../config/logger.js";
 
 export const createUserController = async (req, res) => {
   let passwordHash;
@@ -113,38 +114,61 @@ export const getUserController = async (req, res) => {
 export const verifyUserController = async (req, res) => {
   const token = req.query.token;
   const username = req.query.username;
-  const userData = findOneByUsername(username);
-  //check if user is already verified
-  if (userData.is_verified) {
-    res.status(200);
-    res.set("cache-control", "no-cache").end();
-    return;
-  }
-
-  if (token) {
+  if (username && token) {
+    const userData = await findOneByUsername(username);
+    if (!userData) {
+      logger.info({ message: "no such user" });
+      logger.info({ message: "responding with 400" });
+      res.status(400);
+      res.set("Content-Type", "text/html");
+      res.set("cache-control", "no-cache").end();
+      res.send("<h1>Invalid link</h1> <p>The link is invalid</p>").end();
+      return;
+    }
+    if (userData.is_verified) {
+      res.status(200);
+      res.set("Content-Type", "text/html");
+      res.set("cache-control", "no-cache");
+      res.send("<h1>User already verified</h1>").end();
+      return;
+    }
     try {
       const now = new Date();
       if (userData.verification_token === token) {
         if (userData.token_valid_until > now) {
-          await updateUser({ ...userData, is_verified: true });
+          await updateUser({ ...userData, is_verified: true }, username);
           logger.info("Token validation successful : user verified");
           logger.info("responding with 200");
           res.status(200);
-          res.set("cache-control", "no-cache").end();
+          res.set("Content-Type", "text/html");
+          res.set("cache-control", "no-cache");
+          res
+            .send(
+              "<h1>Email verification successful</h1> <p>user verified successfully</p>"
+            )
+            .end();
           return;
         } else {
           logger.warn({
             message: `token Expired now:${now} | validity: ${userData.token_valid_until}`,
           });
-          logger.info({ message: "responding with 400" });
-          res.status(400);
-          res.set("cache-control", "no-cache").end();
+          logger.info({ message: "responding with 401" });
+          res.status(401);
+          res.set("Content-Type", "text/html");
+          res.set("cache-control", "no-cache");
+          res
+            .send(
+              "<h1>Link Expired!</h1> <p>The verification link is expired</p>"
+            )
+            .end();
         }
       } else {
         logger.warn({ message: "token mismatch" });
         logger.info({ message: "responding with 400" });
         res.status(400);
-        res.set("cache-control", "no-cache").end();
+        res.set("Content-Type", "text/html");
+        res.set("cache-control", "no-cache");
+        res.send("<h1>Invalid link</h1> <p>The link is invalid</p>").end();
         return;
       }
     } catch (e) {
@@ -152,10 +176,12 @@ export const verifyUserController = async (req, res) => {
       return;
     }
   } else {
-    logger.info({ message: "request Missing Token" });
+    logger.info({ message: "request Missing username or email" });
     logger.info({ message: "responding with 400" });
     res.status(400);
-    res.set("cache-control", "no-cache").end();
+    res.set("Content-Type", "text/html");
+    res.set("cache-control", "no-cache");
+    res.send("<h1>Invalid link</h1> <p>The link is invalid</p>").end();
     return;
   }
 };
