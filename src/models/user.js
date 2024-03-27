@@ -42,6 +42,10 @@ const user_model = {
     type: DataTypes.BOOLEAN,
     allowNull: false,
   },
+  token_valid_until: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
 };
 
 export default user_model;

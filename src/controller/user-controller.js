@@ -3,10 +3,10 @@ import {
   doesUserAlreadyExist,
   updateUser,
   getUser,
+  findOneByUsername,
 } from "../services/user-service.js";
 import { publishMessage } from "../services/pubSub-service.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 
 export const createUserController = async (req, res) => {
   let passwordHash;
@@ -112,30 +112,51 @@ export const getUserController = async (req, res) => {
 
 export const verifyUserController = async (req, res) => {
   const token = req.query.token;
-  try {
-    const decoded = jwt.verify(token, process.env.TOKEN_SECRET_KEY);
-    console.log(decoded);
-    const username = decoded.email;
-    const userData = getUser(username);
-    if (userData.token === token) {
-      await updateUser({ ...userData, is_verified: true });
-    } else {
-      res.status(400);
-      res.body({
-        status: "error",
-        error: "BadToken",
-        message: "The email verification link has bad token",
-      });
-      res.set("cache-control", "no-cache").end();
-    }
-  } catch (e) {
-    res.status(400);
-    res.body({
-      status: "error",
-      error: "TokenExpired",
-      message: "The email verification link has expired",
-    });
+  const username = req.query.username;
+  const userData = findOneByUsername(username);
+  //check if user is already verified
+  if (userData.is_verified) {
+    res.status(200);
     res.set("cache-control", "no-cache").end();
+    return;
+  }
+
+  if (token) {
+    try {
+      const now = new Date();
+      if (userData.verification_token === token) {
+        if (userData.token_valid_until > now) {
+          await updateUser({ ...userData, is_verified: true });
+          logger.info("Token validation successful : user verified");
+          logger.info("responding with 200");
+          res.status(200);
+          res.set("cache-control", "no-cache").end();
+          return;
+        } else {
+          logger.warn({
+            message: `token Expired now:${now} | validity: ${userData.token_valid_until}`,
+          });
+          logger.info({ message: "responding with 400" });
+          res.status(400);
+          res.set("cache-control", "no-cache").end();
+        }
+      } else {
+        logger.warn({ message: "token mismatch" });
+        logger.info({ message: "responding with 400" });
+        res.status(400);
+        res.set("cache-control", "no-cache").end();
+        return;
+      }
+    } catch (e) {
+      logger.error(e);
+      return;
+    }
+  } else {
+    logger.info({ message: "request Missing Token" });
+    logger.info({ message: "responding with 400" });
+    res.status(400);
+    res.set("cache-control", "no-cache").end();
+    return;
   }
 };
 

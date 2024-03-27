@@ -12,9 +12,9 @@ export async function publishMessage(data) {
       const messageId = await pubSubClient
         .topic(topicName)
         .publishMessage({ data: dataBuffer });
-      logger.debug(`Message ${messageId} published.`);
+      logger.info(`Message ${messageId} published.`);
     } catch (error) {
-      logger.debug(`Received error while publishing: ${error.message}`);
+      logger.info(`Received error while publishing: ${error.message}`);
     }
   }
 }

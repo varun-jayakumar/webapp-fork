@@ -33,7 +33,7 @@ userRouter
   );
 userRouter
   .route("/verify")
-  .post(
+  .get(
     middlewares.requestLogger,
     middlewares.dbConnectionStatus,
     userController.verifyUserController
