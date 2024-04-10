@@ -144,6 +144,7 @@ jobs:
           gcloud secrets versions access latest --secret="key_ring_name" > keyringname.txt
           gcloud compute images describe-from-family csye6225 --project=cloudspring2024-dev-415217 --format="value(name)" > latest_image.txt
           ${{ needs.build-ami-with-packer.outputs.created_image }} > current_image.txt
+          cat current_image.txt
       - name: Create Startup Script
         run: |
           cat <<EOF > startup_script.sh
