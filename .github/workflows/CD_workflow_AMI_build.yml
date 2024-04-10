@@ -109,7 +109,7 @@ jobs:
       - name: Run `packer build`
         id: build
         run: |
-          packer_output =$(packer build -var-file=./packer/var.pkrvars.hcl  ./packer/)
+          packer_output=$(packer build -var-file=./packer/var.pkrvars.hcl  ./packer/)
           echo "$packer_output"
           created_image=$(echo "$packer_output" | grep -oE 'webapp-image-[0-9]+')
           echo "$created_image"
