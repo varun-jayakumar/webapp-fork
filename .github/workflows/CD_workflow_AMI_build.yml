@@ -120,8 +120,6 @@ jobs:
 
   instance-template-build-rolling-update:
     needs: build-ami-with-packer
-    env:
-      TIMESTAMP: ${{ github.run_id }}
     runs-on: ubuntu-latest
     steps:
       - name: Update Ubuntu
@@ -140,7 +138,7 @@ jobs:
       - name: "Use gcloud CLI"
         run: "gcloud info"
 
-      - name: Fetch secrets from Secret Manager
+      - name: Create secret files to use
         run: |
           gcloud secrets versions access latest --secret="db_password" > db_password.txt
           gcloud secrets versions access latest --secret="db_host" > db_hostname.txt
@@ -165,7 +163,7 @@ jobs:
           EOF
           chmod +x startup_script.sh
 
-      - name: Create Compute Instance Template
+      - name: Create Template
         run: |
           echo "${{needs.build-ami-with-packer.outputs.created_image}}"
           TEMPLATE_NAME="webapp-server-${{ github.run_number }}"
@@ -185,13 +183,13 @@ jobs:
               --scopes="cloud-platform" \
               --metadata-from-file=startup-script=startup_script.sh
 
-      - name: Start Rolling Update
+      - name: start - Rolling update
         run: |
           gcloud compute instance-groups managed rolling-action start-update "webappserver-igm" \
           --region="us-east1" --version template=projects/cloudspring2024-demo-415217/regions/us-east1/instanceTemplates/${{ env.TEMPLATE_NAME }} \
           --max-unavailable=2
 
-      - name: Wait Until Rolling update complete
+      - name: await - Rolling update
         run: |
           gcloud compute instance-groups managed wait-until "webappserver-igm" \
           --region="us-east1" --version-target-reached
