@@ -145,7 +145,7 @@ jobs:
           if [ ! -f "/opt/webapp/.env" ]; then
             # Create .env file
             cat <<EOL > "/opt/webapp/.env"
-            PG_HOST=$(<db_hostname.txt)
+            DB_HOST=$(<db_hostname.txt)
             DB_USERNAME=webapp
             DB_PASSWORD=$(<db_password.txt)
             DB_NAME=webapp
