@@ -111,7 +111,7 @@ jobs:
         run: "packer build -var-file=./packer/var.pkrvars.hcl  ./packer/"
 
   instance-template-build:
-    needs: packer-build
+    needs: build-ami-with-packer
     env:
       TIMESTAMP: ${{ github.run_id }}
     runs-on: ubuntu-latest
