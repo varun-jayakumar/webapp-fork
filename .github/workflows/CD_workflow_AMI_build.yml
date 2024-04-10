@@ -178,7 +178,7 @@ jobs:
               --image-project="cloudspring2024-dev-415217" \
               --boot-disk-size=40GB \
               --boot-disk-type="pd-balanced" \
-              --boot-disk-kms-key="projects/cloudspring2024-demo-415217/locations/us-east1/keyRings/$(<keyringname.txt)/cryptoKeys/csye6255-key" \
+              --boot-disk-kms-key="projects/cloudspring2024-demo-415217/locations/us-east1/keyRings/$(<keyringname.txt)/cryptoKeys/csye6255-CMK" \
               --subnet="projects/cloudspring2024-demo-415217/regions/us-east1/subnetworks/webapp" \
               --network-tier="STANDARD" \
               --service-account="service-account-logging@cloudspring2024-demo-415217.iam.gserviceaccount.com" \
