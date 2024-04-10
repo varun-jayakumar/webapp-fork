@@ -8,6 +8,39 @@ env:
   PRODUCT_VERSION: "latest"
 
 jobs:
+  integration-test:
+    if: ${{ github.event.pull_request.merged }} ||  ${{ github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20.x"
+      - name: install dependencies
+        run: npm i
+      - name: Install PostgresSQL
+        run: |
+          sudo apt install -y postgresql-14 postgresql-client-14
+          sudo systemctl enable postgresql
+          sudo systemctl start postgresql
+      - name: change passoword of user
+        run: sudo -u postgres psql -c "ALTER USER ${{ secrets.DB_USERNAME }} PASSWORD '${{ secrets.DB_PASSWORD }}';"
+      - name: Create the .env file
+        run: |
+          cat << EOF > .env
+          DB_USERNAME=${{ secrets.DB_USERNAME }}
+          DB_NAME=${{ secrets.DB_NAME }}
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          DB_PORT=${{ secrets.DB_PORT }}
+          DB_HOST=${{ secrets.DB_HOST }}
+          PORT=${{ secrets.PORT }}
+          EOF
+          echo ".env file created with the specified content."
+      - run: cat .env
+      - name: Run tests
+        run: npm test
+
   build-ami-with-packer:
     if: ${{ github.event.pull_request.merged }} ||  ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
@@ -76,3 +109,83 @@ jobs:
       - name: Run `packer build`
         id: build
         run: "packer build -var-file=./packer/var.pkrvars.hcl  ./packer/"
+
+  instance-template-build:
+    needs: packer-build
+    env:
+      TIMESTAMP: ${{ github.run_id }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Ubuntu
+        run: sudo apt update
+      - uses: actions/checkout@v2
+      - name: Setup packer
+        uses: hashicorp/setup-packer@main
+      - name: "Google Auth"
+        uses: "google-github-actions/auth@v2"
+        with:
+          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v2"
+
+      - name: "Use gcloud CLI"
+        run: "gcloud info"
+
+      - name: Fetch secrets from Secret Manager
+        run: |
+          gcloud secrets versions access latest --secret="db_hostname" > db_hostname.txt
+          gcloud secrets versions access latest --secret="db_password" > db_password.txt
+          gcloud secrets versions access latest --secret="csye6255" > keyringname.txt
+          gcloud compute images describe-from-family csye6225 --project=cloudspring2024-dev-415217 --format="value(name)" > latest_image.txt
+      - name: Create Startup Script
+        run: |
+          cat <<EOF > startup_script.sh
+          #!/bin/bash
+          # Check if .env file already exists
+          if [ ! -f "/opt/webapp/.env" ]; then
+            # Create .env file
+            cat <<EOL > "/opt/app/.env"
+            PG_HOST=$(<db_hostname.txt)
+            DB_USERNAME=webapp
+            DB_PASSWORD=$(<db_password.txt)
+            DB_NAME=webapp
+            DB_PORT=5432
+            PORT=3000
+            PUB_TOPIC=verify_email
+            PUB_PROJECT_ID=cloudspring2024-demo-415217
+          EOL
+            touch /opt/webapp/start.txt 
+          fi
+          EOF
+          chmod +x startup_script.sh
+
+      - name: Create Compute Instance Template
+        run: |
+          TEMPLATE_NAME="appserver-${{ github.run_number }}"
+          echo "TEMPLATE_NAME=$TEMPLATE_NAME" >> $GITHUB_ENV
+          gcloud compute instance-templates create "$TEMPLATE_NAME" \
+              --tags="webapp-instance" \
+              --instance-template-region="us-east1" \
+              --machine-type="e2-medium" \
+              --image=$(<latest_image.txt) \
+              --image-project="cloudspring2024-dev-415217" \
+              --boot-disk-size=40GB \
+              --boot-disk-type="pd-balanced" \
+              --boot-disk-kms-key="projects/cloudspring2024-demo-415217/locations/us-east1/keyRings/$(<keyringname.txt)/cryptoKeys/csye6255-key" \
+              --subnet="projects/cloudspring2024-demo-415217/regions/us-east1/subnetworks/webapp" \
+              --network-tier="STANDARD" \
+              --service-account="service-account-logging@cloudspring2024-demo-415217.iam.gserviceaccount.com" \
+              --scopes="cloud-platform" \
+              --metadata-from-file=startup-script=startup_script.sh
+
+      - name: Start Rolling Update
+        run: |
+          gcloud compute instance-groups managed rolling-action start-update "webappserver-igm" \
+          --region="us-east1" --version template=projects/cloudspring2024-demo-415217/regions/us-east1/instanceTemplates/${{ env.TEMPLATE_NAME }} \
+          --max-unavailable=2
+
+      - name: Wait Until Rolling update complete
+        run: |
+          gcloud compute instance-groups managed wait-until "webappserver-igm" \
+          --region="us-east1" --version-target-reached
