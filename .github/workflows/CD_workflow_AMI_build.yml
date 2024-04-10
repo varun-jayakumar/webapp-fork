@@ -167,6 +167,7 @@ jobs:
         run: |
           echo "${{needs.build-ami-with-packer.outputs.created_image}}"
           TEMPLATE_NAME="webapp-server-${{ github.run_number }}"
+          echo "TEMPLATE_NAME=$TEMPLATE_NAME" >> $GITHUB_ENV
           gcloud compute instance-templates create "$TEMPLATE_NAME" \
               --tags="webapp-instance" \
               --instance-template-region="us-east1" \
