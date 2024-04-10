@@ -42,6 +42,9 @@ jobs:
         run: npm test
 
   build-ami-with-packer:
+    needs: integration-test
+    outputs:
+      created_image: ${{steps.build-ami-with-packer.outputs.created_image}}
     if: ${{ github.event.pull_request.merged }} ||  ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     steps:
@@ -164,13 +167,14 @@ jobs:
 
       - name: Create Compute Instance Template
         run: |
+          echo ${{needs.build-ami-with-packer.outputs.created_image}}
           TEMPLATE_NAME="webapp-server-${{ github.run_number }}"
           echo "TEMPLATE_NAME=$TEMPLATE_NAME" >> $GITHUB_ENV
           gcloud compute instance-templates create "$TEMPLATE_NAME" \
               --tags="webapp-instance" \
               --instance-template-region="us-east1" \
               --machine-type="e2-medium" \
-              --image=${{ needs.build-ami-with-packer.outputs.created_image }} \
+              --image=${{needs.build-ami-with-packer.outputs.created_image}} \
               --image-project="cloudspring2024-dev-415217" \
               --boot-disk-size=40GB \
               --boot-disk-type="pd-balanced" \
