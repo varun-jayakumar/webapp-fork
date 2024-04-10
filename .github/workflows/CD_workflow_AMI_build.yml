@@ -134,9 +134,9 @@ jobs:
 
       - name: Fetch secrets from Secret Manager
         run: |
-          gcloud secrets versions access latest --secret="db_hostname" > db_hostname.txt
+          gcloud secrets versions access latest --secret="db_host" > db_hostname.txt
           gcloud secrets versions access latest --secret="db_password" > db_password.txt
-          gcloud secrets versions access latest --secret="csye6255" > keyringname.txt
+          gcloud secrets versions access latest --secret="key_ring_name" > keyringname.txt
           gcloud compute images describe-from-family csye6225 --project=cloudspring2024-dev-415217 --format="value(name)" > latest_image.txt
       - name: Create Startup Script
         run: |
