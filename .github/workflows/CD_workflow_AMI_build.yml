@@ -44,7 +44,7 @@ jobs:
   build-ami-with-packer:
     needs: integration-test
     outputs:
-      created_image: ${{steps.build-ami-with-packer.outputs.created_image}}
+      created_image: ${{steps.packer-build.outputs.created_image}}
     if: ${{ github.event.pull_request.merged }} ||  ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     steps:
@@ -110,7 +110,7 @@ jobs:
         run: "packer validate -syntax-only ./packer/"
 
       - name: Run `packer build`
-        id: build
+        id: packer-build
         run: |
           packer_output=$(packer build -var-file=./packer/var.pkrvars.hcl  ./packer/)
           echo "$packer_output"
@@ -167,7 +167,7 @@ jobs:
 
       - name: Create Compute Instance Template
         run: |
-          echo ${{needs.build-ami-with-packer.outputs.created_image}}
+          echo "${{needs.build-ami-with-packer.outputs.created_image}}"
           TEMPLATE_NAME="webapp-server-${{ github.run_number }}"
           echo "TEMPLATE_NAME=$TEMPLATE_NAME" >> $GITHUB_ENV
           gcloud compute instance-templates create "$TEMPLATE_NAME" \
