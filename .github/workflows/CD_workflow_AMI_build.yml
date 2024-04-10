@@ -189,7 +189,7 @@ jobs:
         run: |
           gcloud compute instance-groups managed rolling-action start-update "webappserver-igm" \
           --region="us-east1" --version template=projects/cloudspring2024-demo-415217/regions/us-east1/instanceTemplates/${{ env.TEMPLATE_NAME }} \
-          --max-unavailable=3
+          --max-unavailable=2
 
       - name: Wait Until Rolling update complete
         run: |
