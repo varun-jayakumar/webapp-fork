@@ -7,7 +7,7 @@ import {
 var base64 = require("base-64");
 var utf8 = require("utf8");
 
-describe("/healthz and /v1/user/*", () => {
+describe("/healthz and /v2/user/*", () => {
   beforeAll(async () => {
     return await waitForDbToInitialize();
   }, 30000);
@@ -17,7 +17,7 @@ describe("/healthz and /v1/user/*", () => {
     return;
   }, 30000);
 
-  it("POST /v1/user and GET /v1/user/self to validate account creation", async () => {
+  it("POST /v2/user and GET /v2/user/self to validate account creation", async () => {
     const userCreationPayload = {
       first_name: "test_first_name",
       last_name: "test_last_name",
@@ -37,7 +37,7 @@ describe("/healthz and /v1/user/*", () => {
     const authHeader = `Basic ${base64AuthHeaderNE}`;
 
     const response = await request(app)
-      .post("/v1/user")
+      .post("/2/user")
       .send(userCreationPayload)
       .set("Accept", "application/json");
 
@@ -47,7 +47,7 @@ describe("/healthz and /v1/user/*", () => {
     expect(response.body.username).toEqual(userCreationPayload.username);
 
     const getUserDetailsResponse = await request(app)
-      .get("/v1/user/self")
+      .get("/v2/user/self")
       .set("Accept", "application/json")
       .set("Authorization", authHeader);
 
@@ -63,7 +63,7 @@ describe("/healthz and /v1/user/*", () => {
     );
   }, 30000);
 
-  it("PUT /v1/user/self and GET /v1/user/self to validate account update", async () => {
+  it("PUT /v2/user/self and GET /v2/user/self to validate account update", async () => {
     const userCreationPayload = {
       first_name: "test_first_name",
       last_name: "test_last_name",
@@ -83,7 +83,7 @@ describe("/healthz and /v1/user/*", () => {
     const authHeader = `Basic ${base64AuthHeaderNE}`;
 
     const updateResponse = await request(app)
-      .put("/v1/user/self")
+      .put("/v2/user/self")
       .send(updateUserPayload)
       .set("Authorization", authHeader);
 
@@ -95,7 +95,7 @@ describe("/healthz and /v1/user/*", () => {
     const newAuthHeader = `Basic ${newBase64AuthHeaderNE}`;
 
     const getUserDetailsResponse = await request(app)
-      .get("/v1/user/self")
+      .get("/v2/user/self")
       .set("Accept", "application/json")
       .set("Authorization", newAuthHeader);
 
