@@ -37,7 +37,7 @@ describe("/healthz and /v2/user/*", () => {
     const authHeader = `Basic ${base64AuthHeaderNE}`;
 
     const response = await request(app)
-      .post("/2/user")
+      .post("/v2/user")
       .send(userCreationPayload)
       .set("Accept", "application/json");
 
